@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPI Biologi: Pertumbuhan & Perkembangan Manusia - SMAN 1 Parongpong</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bio: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        .animate-bounce-slow {
+            animation: bounce 3s infinite;
+        }
+        .gradient-bio {
+            background: linear-gradient(135deg, #15803d 0%, #22c55e 50%, #4ade80 100%);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f0fdf4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #22c55e;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER & NAVBAR -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-bio-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo & Info Sekolah -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-bio-700 to-bio-400 flex items-center justify-center text-white shadow-lg shadow-bio-500/30">
+                        <i class="fa-solid fa-dna text-2xl animate-pulse"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900 leading-tight">BioExplorer: Human Life Cycle</h1>
+                        <p class="text-xs text-bio-700 font-medium">SMAN 1 Parongpong • Pengembang: Imas Rohimah</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1 bg-bio-50 p-1.5 rounded-2xl border border-bio-200">
+                    <button onclick="switchTab('orientasi')" id="nav-orientasi" class="nav-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 bg-bio-600 text-white shadow-sm">
+                        <i class="fa-solid fa-compass mr-1.5"></i> Tahap 1: Apersepsi
+                    </button>
+                    <button onclick="switchTab('embrionik')" id="nav-embrionik" class="nav-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-bio-700 hover:bg-bio-100 transition-all duration-200">
+                        <i class="fa-solid fa-egg mr-1.5"></i> Fase Embrionik
+                    </button>
+                    <button onclick="switchTab('pascaembrionik')" id="nav-pascaembrionik" class="nav-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-bio-700 hover:bg-bio-100 transition-all duration-200">
+                        <i class="fa-solid fa-child-reaching mr-1.5"></i> Pascaembrionik
+                    </button>
+                    <button onclick="switchTab('evaluasi')" id="nav-evaluasi" class="nav-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-bio-700 hover:bg-bio-100 transition-all duration-200">
+                        <i class="fa-solid fa-microscope mr-1.5"></i> Studi Kasus & Evaluasi
+                    </button>
+                </nav>
+
+                <!-- Audio Toggle & Progress Badges -->
+                <div class="flex items-center space-x-3">
+                    <button id="soundToggleBtn" onclick="toggleSound()" class="p-2.5 rounded-xl bg-bio-100 text-bio-700 hover:bg-bio-200 transition" title="Efek Suara Switched On/Off">
+                        <i id="soundIcon" class="fa-solid fa-volume-high"></i>
+                    </button>
+                    <div class="hidden sm:flex flex-col items-end">
+                        <span class="text-xs font-semibold text-slate-500">Progres Belajar</span>
+                        <div class="w-28 bg-slate-200 h-2 rounded-full overflow-hidden mt-1">
+                            <div id="globalProgressBar" class="bg-bio-500 h-full w-0 transition-all duration-500"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Dropdown -->
+        <div class="md:hidden flex overflow-x-auto p-2 bg-bio-50 border-t border-bio-200 space-x-2 text-xs font-medium">
+            <button onclick="switchTab('orientasi')" class="px-3 py-1.5 rounded-lg bg-bio-600 text-white whitespace-nowrap">1. Apersepsi</button>
+            <button onclick="switchTab('embrionik')" class="px-3 py-1.5 rounded-lg bg-white text-slate-700 border border-bio-200 whitespace-nowrap">2. Embrionik</button>
+            <button onclick="switchTab('pascaembrionik')" class="px-3 py-1.5 rounded-lg bg-white text-slate-700 border border-bio-200 whitespace-nowrap">3. Pascaembrionik</button>
+            <button onclick="switchTab('evaluasi')" class="px-3 py-1.5 rounded-lg bg-white text-slate-700 border border-bio-200 whitespace-nowrap">4. Evaluasi</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+
+        <!-- ================= TAHAP 1: ORIENTASI & EKSPLORASI AWAL ================= -->
+        <section id="tab-orientasi" class="tab-content block space-y-8 animate-fade-in">
+            <!-- Hero Card -->
+            <div class="gradient-bio rounded-3xl p-8 sm:p-10 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute right-0 top-0 -mt-10 -mr-10 w-80 h-80 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">Modul Deep Learning Biologi</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold mt-3 leading-tight">Membongkar Misteri Pertumbuhan & Perkembangan Manusia</h2>
+                    <p class="mt-4 text-bio-50 text-sm sm:text-base leading-relaxed">
+                        Selamat datang di Media Pembelajaran Interaktif Biologi Kelas 12 (Fase F). Mari telusuri transformasi spektakuler dari satu sel tunggal (zigot) menjadi triliunan sel kompleks yang membentuk manusia utuh!
+                    </p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-4 text-xs font-medium">
+                        <div class="bg-white/15 backdrop-blur-sm px-4 py-2.5 rounded-xl flex items-center gap-2">
+                            <i class="fa-solid fa-bullseye text-bio-300"></i>
+                            <span><b>TP:</b> Mengidentifikasi Fase Embrionik & Pascaembrionik</span>
+                        </div>
+                        <div class="bg-white/15 backdrop-blur-sm px-4 py-2.5 rounded-xl flex items-center gap-2">
+                            <i class="fa-solid fa-school text-bio-300"></i>
+                            <span>SMAN 1 Parongpong</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Narasi Pembuka Konteks -->
+            <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-sm">
+                <h3 class="text-xl font-bold text-bio-900 flex items-center gap-2">
+                    <i class="fa-solid fa-brain text-bio-600"></i>
+                    Apersepsi Konseptual: Pernahkah Anda Berpikir?
+                </h3>
+                <p class="mt-3 text-slate-600 text-sm leading-relaxed">
+                    Setiap manusia yang hidup hari ini pernah berukuran lebih kecil dari satu titik tinta di kertas (sekitar 0,1 mm). Mengapa tinggi badan kita berhenti bertambah setelah usia remaja, namun wawasan, emosi, dan sel sperma/ovum terus mematang? 
+                    <b>Pertumbuhan</b> dan <b>Perkembangan</b> sering diucapkan beriringan, namun memiliki landasan biologis yang sangat berbeda!
+                </p>
+            </div>
+
+            <!-- INTERAKSI 1: EKSPLORASI AWAL (Membongkar Mitos Pertumbuhan vs Perkembangan) -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 border border-bio-200 shadow-md">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="w-8 h-8 rounded-full bg-bio-600 text-white flex items-center justify-center font-bold text-sm">1</span>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-base">Interaksi Awal: Klasifikasi Fenomena Biologis</h4>
+                            <p class="text-xs text-slate-500">Instruksi: Tentukan apakah fenomena berikut merupakan 'Pertumbuhan' atau 'Perkembangan'.</p>
+                        </div>
+                    </div>
+                    <span class="bg-bio-100 text-bio-800 text-xs font-bold px-3 py-1 rounded-full">Diagnostic Check</span>
+                </div>
+
+                <!-- Quiz Interactive Container -->
+                <div id="apersepsiContainer" class="space-y-6">
+                    <!-- Dynamic Questions loaded by JS -->
+                </div>
+
+                <div id="apersepsiFeedback" class="hidden mt-6 p-4 rounded-xl text-sm leading-relaxed border transition-all"></div>
+            </div>
+
+            <!-- Navigation Button -->
+            <div class="flex justify-end">
+                <button onclick="switchTab('embrionik')" class="px-6 py-3 rounded-xl bg-bio-600 text-white font-semibold hover:bg-bio-700 transition flex items-center gap-2 shadow-lg shadow-bio-600/20">
+                    Lanjut ke Fase Embrionik <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= TAHAP 2: FASE EMBRIONIK ================= -->
+        <section id="tab-embrionik" class="tab-content hidden space-y-8 animate-fade-in">
+            <!-- Header Section -->
+            <div class="bg-gradient-to-r from-bio-800 to-bio-600 rounded-2xl p-6 text-white shadow-md">
+                <h2 class="text-2xl font-bold flex items-center gap-3">
+                    <i class="fa-solid fa-egg"></i>
+                    Fase Embrionik: Dari Zigot Hingga Organogenesis
+                </h2>
+                <p class="text-bio-100 text-xs sm:text-sm mt-2">
+                    Fase embrionik adalah tahap pertumbuhan dan perkembangan yang dimulai sejak fertilisasi ovum oleh sperma hingga terbentuknya janin yang lengkap sebelum dilahirkan.
+                </p>
+            </div>
+
+            <!-- Visual Step Explorer (Interactive Canvas Simulator) -->
+            <div class="bg-white rounded-2xl p-6 border border-bio-200 shadow-sm">
+                <h3 class="font-bold text-slate-800 mb-2 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-play-circle text-bio-600"></i> Visualisasi Tahapan Mula Fase Embrionik
+                </h3>
+                <p class="text-xs text-slate-500 mb-4">Klik tombol tahapan di bawah untuk mengamati pembelahan sel seluler pada simulasi canvas.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <!-- Canvas Box -->
+                    <div class="md:col-span-2 bg-slate-900 rounded-xl p-4 flex flex-col items-center justify-center relative min-h-[260px]">
+                        <canvas id="embryoCanvas" width="450" height="220" class="max-w-full rounded-lg"></canvas>
+                        <div id="canvasStageTag" class="absolute top-3 left-3 bg-bio-500/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full">
+                            1. Zigot (1 Sel)
+                        </div>
+                    </div>
+
+                    <!-- Stage Description Cards -->
+                    <div class="space-y-2">
+                        <button onclick="setEmbryoStage(0)" class="stage-btn w-full text-left p-3 rounded-xl border border-bio-300 bg-bio-50 font-semibold text-xs text-bio-900 hover:bg-bio-100 transition flex justify-between items-center">
+                            <span>1. Zigot & Pembelahan (Cleavage)</span>
+                            <i class="fa-solid fa-chevron-right text-bio-600"></i>
+                        </button>
+                        <button onclick="setEmbryoStage(1)" class="stage-btn w-full text-left p-3 rounded-xl border border-slate-200 bg-white font-semibold text-xs text-slate-700 hover:bg-bio-50 transition flex justify-between items-center">
+                            <span>2. Morula (Bola Sel Solid)</span>
+                            <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                        </button>
+                        <button onclick="setEmbryoStage(2)" class="stage-btn w-full text-left p-3 rounded-xl border border-slate-200 bg-white font-semibold text-xs text-slate-700 hover:bg-bio-50 transition flex justify-between items-center">
+                            <span>3. Blastula (Rongga Blastosol)</span>
+                            <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                        </button>
+                        <button onclick="setEmbryoStage(3)" class="stage-btn w-full text-left p-3 rounded-xl border border-slate-200 bg-white font-semibold text-xs text-slate-700 hover:bg-bio-50 transition flex justify-between items-center">
+                            <span>4. Gastrula (3 Lapisan Germinal)</span>
+                            <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                        </button>
+                        <button onclick="setEmbryoStage(4)" class="stage-btn w-full text-left p-3 rounded-xl border border-slate-200 bg-white font-semibold text-xs text-slate-700 hover:bg-bio-50 transition flex justify-between items-center">
+                            <span>5. Organogenesis (Pembentukan Organ)</span>
+                            <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stage Dynamic Explanation Box -->
+                <div id="stageDescBox" class="mt-4 p-4 rounded-xl bg-bio-50 border border-bio-200 text-xs text-slate-700 leading-relaxed">
+                    <b>Zigot:</b> Sel tunggal dipoloid (2n) hasil peleburan inti sperma dan ovum di tuba fallopi. Selanjutnya mengalami pembelahan mitosis secara cepat tanpa pertambahan volume sel total (cleavage).
+                </div>
+            </div>
+
+            <!-- INTERAKSI 2: MATRIKS ORGANOGENESIS LAPISAN GASTRULA (Wajib) -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 border border-bio-200 shadow-md">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="w-8 h-8 rounded-full bg-bio-600 text-white flex items-center justify-center font-bold text-sm">2</span>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-base">Interaksi Wajib: Menjodohkan Lapisan Gastrula & Organ Turunannya</h4>
+                            <p class="text-xs text-slate-500">
+                                <b>a. Instruksi:</b> Klik/Pilih organ tubuh di kolom kiri, lalu tentukan Lapisan Embrionik (Ektoderm, Mesoderm, atau Endoderm) yang membentuk organ tersebut!
+                            </p>
+                        </div>
+                    </div>
+                    <span class="bg-bio-100 text-bio-800 text-xs font-bold px-3 py-1 rounded-full">Organogenesis Matcher</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Organ Selection Buttons -->
+                    <div class="space-y-3">
+                        <label class="text-xs font-bold text-slate-600 uppercase">1. Pilih Organ Target:</label>
+                        <div id="organBtnContainer" class="grid grid-cols-2 gap-2">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Germ Layer Chooser -->
+                    <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <label class="text-xs font-bold text-slate-600 uppercase">2. Tentukan Lapisan Pembentuknya:</label>
+                        <div class="space-y-2">
+                            <button onclick="submitGermMatch('Ektoderm')" class="w-full text-left p-3 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 hover:bg-blue-100 transition text-xs font-semibold flex items-center justify-between">
+                                <span><i class="fa-solid fa-layer-group text-blue-500 mr-2"></i><b>Ektoderm</b> (Lapisan Luar)</span>
+                                <i class="fa-solid fa-hand-pointer"></i>
+                            </button>
+                            <button onclick="submitGermMatch('Mesoderm')" class="w-full text-left p-3 rounded-lg bg-red-50 border border-red-200 text-red-900 hover:bg-red-100 transition text-xs font-semibold flex items-center justify-between">
+                                <span><i class="fa-solid fa-layer-group text-red-500 mr-2"></i><b>Mesoderm</b> (Lapisan Tengah)</span>
+                                <i class="fa-solid fa-hand-pointer"></i>
+                            </button>
+                            <button onclick="submitGermMatch('Endoderm')" class="w-full text-left p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 hover:bg-amber-100 transition text-xs font-semibold flex items-center justify-between">
+                                <span><i class="fa-solid fa-layer-group text-amber-500 mr-2"></i><b>Endoderm</b> (Lapisan Dalam)</span>
+                                <i class="fa-solid fa-hand-pointer"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Direct Feedback & Conceptual Explanation Box -->
+                <div id="organFeedback" class="hidden mt-6 p-4 rounded-xl text-xs leading-relaxed border transition-all">
+                    <!-- Populated dynamically: Feedback + Conceptual Reason -->
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between">
+                <button onclick="switchTab('orientasi')" class="px-6 py-3 rounded-xl bg-slate-200 text-slate-700 font-semibold hover:bg-slate-300 transition text-xs">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+                <button onclick="switchTab('pascaembrionik')" class="px-6 py-3 rounded-xl bg-bio-600 text-white font-semibold hover:bg-bio-700 transition flex items-center gap-2 shadow-lg shadow-bio-600/20 text-xs">
+                    Lanjut ke Pascaembrionik <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= TAHAP 2 (LANJUTAN): FASE PASCAEMBRIONIK ================= -->
+        <section id="tab-pascaembrionik" class="tab-content hidden space-y-8 animate-fade-in">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-bio-700 to-teal-600 rounded-2xl p-6 text-white shadow-md">
+                <h2 class="text-2xl font-bold flex items-center gap-3">
+                    <i class="fa-solid fa-child-reaching"></i>
+                    Fase Pascaembrionik: Daur Hidup & Pubertas
+                </h2>
+                <p class="text-bio-100 text-xs sm:text-sm mt-2">
+                    Fase pascaembrionik dimulai sejak bayi dilahirkan. Terjadi pertumbuhan ukuran fisik yang pesat serta kematangan organ reproduksi dan fungsi psikis manusia.
+                </p>
+            </div>
+
+            <!-- Lifecycle Slider / Interactive Timeline -->
+            <div class="bg-white rounded-2xl p-6 border border-bio-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-timeline text-bio-600"></i> Timeline Daur Hidup Manusia Pascaembrionik
+                </h3>
+                <p class="text-xs text-slate-500">Geser slider di bawah untuk mengamati perubahan karakteristik fisiologis manusia:</p>
+
+                <div class="py-4">
+                    <input type="range" id="ageSlider" min="0" max="4" step="1" value="2" class="w-full accent-bio-600 cursor-pointer" oninput="updateAgeTimeline(this.value)">
+                    <div class="flex justify-between text-xs font-bold text-slate-500 mt-2">
+                        <span>Bayi (0-2 thn)</span>
+                        <span>Anak-anak (3-11 thn)</span>
+                        <span class="text-bio-600">Remaja/Pubertas (12-18 thn)</span>
+                        <span>Dewasa (19-50 thn)</span>
+                        <span>Lansia (&gt;50 thn)</span>
+                    </div>
+                </div>
+
+                <!-- Dynamic Lifecycle Details Display -->
+                <div id="lifecycleCard" class="p-5 rounded-xl bg-bio-50 border border-bio-200 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-bio-600 text-white flex items-center justify-center text-2xl flex-shrink-0 shadow-md">
+                        <i id="lifeIcon" class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <div>
+                        <h4 id="lifeStageTitle" class="font-bold text-bio-900 text-base">Masa Remaja / Pubertas (12 - 18 Tahun)</h4>
+                        <p id="lifeStageDesc" class="text-xs text-slate-700 mt-1 leading-relaxed">
+                            Masa transisi kritikal! Terjadi lonjakan pertumbuhan tinggi badan (growth spurt) serta pematangan organ reproduksi utama (seperti menarche pada perempuan dan mimpi basah pada laki-laki) yang dipicu oleh hormon gonadotropin (FSH & LH).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERAKSI 3: CIRI PUBERTAS & PERAN HORMONAL (Wajib) -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 border border-bio-200 shadow-md">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                    <div class="flex items-center space-x-3">
+                        <span class="w-8 h-8 rounded-full bg-bio-600 text-white flex items-center justify-center font-bold text-sm">3</span>
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-base">Interaksi Wajib: Analisis Ciri Sekunder Pubertas & Hormon Pemicu</h4>
+                            <p class="text-xs text-slate-500">
+                                <b>a. Instruksi:</b> Klasifikasikan tanda pubertas berikut dengan memilih kategori fisiologis yang tepat!
+                            </p>
+                        </div>
+                    </div>
+                    <span class="bg-bio-100 text-bio-800 text-xs font-bold px-3 py-1 rounded-full">Puberty Classifier</span>
+                </div>
+
+                <!-- Container for Interactive Puberty Questions -->
+                <div id="pubertyContainer" class="space-y-6">
+                    <!-- Populated dynamically by JS -->
+                </div>
+
+                <div id="pubertyFeedback" class="hidden mt-6 p-4 rounded-xl text-xs leading-relaxed border transition-all"></div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between">
+                <button onclick="switchTab('embrionik')" class="px-6 py-3 rounded-xl bg-slate-200 text-slate-700 font-semibold hover:bg-slate-300 transition text-xs">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
+                </button>
+                <button onclick="switchTab('evaluasi')" class="px-6 py-3 rounded-xl bg-bio-600 text-white font-semibold hover:bg-bio-700 transition flex items-center gap-2 shadow-lg shadow-bio-600/20 text-xs">
+                    Lanjut ke Studi Kasus & Evaluasi <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= TAHAP 3: EVALUASI KONSEP & REFLEKSI ================= -->
+        <section id="tab-evaluasi" class="tab-content hidden space-y-8 animate-fade-in">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-bio-900 via-bio-700 to-bio-600 rounded-2xl p-6 text-white shadow-md">
+                <h2 class="text-2xl font-bold flex items-center gap-3">
+                    <i class="fa-solid fa-microscope"></i>
+                    Tahap 3: Studi Kasus Aplikasi & Evaluasi Pemahaman Deep Learning
+                </h2>
+                <p class="text-bio-100 text-xs sm:text-sm mt-2">
+                    Uji pemahaman mendalam Anda melalui studi kasus riil kesehatan tumbuh kembang dan evaluasi berbasis Penalaran Biologi Kritis.
+                </p>
+            </div>
+
+            <!-- STUDI KASUS APLIKATIF (Deep Learning Case Study) -->
+            <div class="bg-amber-50 rounded-2xl p-6 border border-amber-200 shadow-sm space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-notes-medical"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-amber-900 text-base">Studi Kasus Klinis: Fenomena Stunting & Faktor Teratogenik</h3>
+                        <p class="text-xs text-amber-700">Analisis Kasus Kesehatan Masyarakat Indonesia</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-amber-200 text-xs text-slate-700 leading-relaxed space-y-2">
+                    <p>
+                        <b>Skenario:</b> Seorang ibu hamil pada trimester pertama (periode organogenesis) terpapar polusi rokok, obat teratogenik, serta mengalami defisiensi asam folat berat. Setelah lahir, anak mengalami keterlambatan pertumbuhan tinggi badan kronis (Stunting) dan gangguan fungsi motorik saraf.
+                    </p>
+                </div>
+
+                <!-- Case Study Interactive Challenge -->
+                <div class="bg-white p-5 rounded-xl border border-amber-200 space-y-4">
+                    <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wide">
+                        <i class="fa-solid fa-circle-question text-amber-600 mr-1"></i> Pertanyaan Analisis Kasus:
+                    </h4>
+                    <p class="text-xs text-slate-700 font-medium">
+                        Berdasarkan pemahaman fase embrionik dan pascaembrionik, mengapa defisiensi gizi & zat berbahaya pada <b>Trimester Pertama</b> berdampak paling fatal bagi pembentukan struktur tubuh manusia?
+                    </p>
+
+                    <div id="caseOptions" class="space-y-2">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <div id="caseFeedback" class="hidden p-4 rounded-xl text-xs leading-relaxed border transition-all"></div>
+                </div>
+            </div>
+
+            <!-- EVALUASI KONSEP / MINI QUIZ -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 border border-bio-200 shadow-md space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg">Kuis Evaluasi Pemahaman Konsep</h3>
+                        <p class="text-xs text-slate-500">Selesaikan seluruh soal untuk mengukur tingkat ketuntasan indikator TP Biologi Anda.</p>
+                    </div>
+                    <span id="quizScoreBadge" class="bg-bio-100 text-bio-800 font-bold px-4 py-2 rounded-xl text-sm">Skor: 0 / 100</span>
+                </div>
+
+                <div id="evalQuizContainer" class="space-y-6">
+                    <!-- Populated dynamically by JS -->
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button id="finishQuizBtn" onclick="calculateFinalScore()" class="px-6 py-3 rounded-xl bg-bio-600 text-white font-bold hover:bg-bio-700 transition shadow-lg shadow-bio-600/20 text-xs">
+                        <i class="fa-solid fa-square-check mr-2"></i> Submit Evaluasi Akhir
+                    </button>
+                </div>
+            </div>
+
+            <!-- REFLEKSI BELAJAR & SERTIFIKAT KELULUSAN -->
+            <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+                <h3 class="font-bold text-bio-900 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-bio-600"></i>
+                    Refleksi Belajar Deep Learning & Laporan Hasil
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Student Form -->
+                    <div class="space-y-3">
+                        <label class="text-xs font-bold text-slate-700">Nama Lengkap Murid:</label>
+                        <input type="text" id="studentNameInput" placeholder="Masukkan Nama Lengkap Anda..." class="w-full px-4 py-2.5 rounded-xl border border-bio-300 text-xs focus:ring-2 focus:ring-bio-500 outline-none">
+                        
+                        <label class="text-xs font-bold text-slate-700">Kelas / Nomor Absen:</label>
+                        <input type="text" id="studentClassInput" placeholder="Contoh: 12 MIPA 1 / 15" class="w-full px-4 py-2.5 rounded-xl border border-bio-300 text-xs focus:ring-2 focus:ring-bio-500 outline-none">
+
+                        <label class="text-xs font-bold text-slate-700">Refleksi Pemahaman Diri:</label>
+                        <textarea id="reflectionInput" rows="3" placeholder="Apa hal paling bermakna yang Anda pelajari tentang fase tumbuh kembang manusia hari ini?" class="w-full px-4 py-2.5 rounded-xl border border-bio-300 text-xs focus:ring-2 focus:ring-bio-500 outline-none"></textarea>
+                    </div>
+
+                    <!-- Report Summary Preview Box -->
+                    <div class="bg-bio-50 p-5 rounded-2xl border border-bio-200 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold text-bio-800 uppercase tracking-wider">Ringkasan Hasil Pembelajaran</span>
+                            <div class="mt-3 space-y-2 text-xs text-slate-700">
+                                <p><strong>Mata Pelajaran:</strong> Biologi Kelas 12 (Fase F)</p>
+                                <p><strong>Topik:</strong> Pertumbuhan & Perkembangan Manusia</p>
+                                <p><strong>Sekolah:</strong> SMAN 1 Parongpong</p>
+                                <p><strong>Guru Penyusun:</strong> Imas Rohimah</p>
+                                <p><strong>Skor Evaluasi:</strong> <span id="summaryScoreText" class="text-bio-700 font-bold">Belum Selesai</span></p>
+                            </div>
+                        </div>
+
+                        <button onclick="generatePrintReport()" class="mt-4 w-full py-3 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition text-xs flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-print"></i> Cetak / Simpan Laporan Pembelajaran
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-bio-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-1">
+            <p class="font-semibold text-bio-800">Media Pembelajaran Interaktif Biologi • SMAN 1 Parongpong</p>
+            <p>Dirancang oleh: <b>Imas Rohimah</b> • Berbasis Pendekatan <i>Deep Learning & Interactive Inquiry</i></p>
+            <p class="text-slate-400">© 2026 SMAN 1 Parongpong. Hak Cipta Dilindungi Undang-Undang.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Global Audio Synthesizer (Web Audio API - No External Assets Needed)
+        let soundEnabled = true;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new AudioCtx();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+                if (type === 'success') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.2); // A5
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now); // A3
+                    osc.frequency.exponentialRampToValueAtTime(130, now + 0.2);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                }
+            } catch (e) {
+                console.log("Audio play error:", e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high';
+                playSound('click');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-slate-400';
+            }
+        }
+
+        function switchTab(tabId) {
+            playSound('click');
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Show selected
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            // Update navbar styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-bio-700 hover:bg-bio-100 transition-all duration-200";
+            });
+            const activeNav = document.getElementById('nav-' + tabId);
+            if (activeNav) {
+                activeNav.className = "nav-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-200 bg-bio-600 text-white shadow-sm";
+            }
+
+            // Canvas Redraw if embrionik
+            if (tabId === 'embrionik') {
+                setTimeout(drawEmbryoCanvas, 50);
+            }
+
+            // Update Progress Bar
+            updateProgressBar();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateProgressBar() {
+            let progress = 25;
+            if (!document.getElementById('tab-embrionik').classList.contains('hidden')) progress = 50;
+            if (!document.getElementById('tab-pascaembrionik').classList.contains('hidden')) progress = 75;
+            if (!document.getElementById('tab-evaluasi').classList.contains('hidden')) progress = 100;
+            document.getElementById('globalProgressBar').style.width = progress + '%';
+        }
+
+        const apersepsiData = [
+            {
+                id: 1,
+                statement: "Pertambahan tinggi badan remaja dari 145 cm menjadi 160 cm.",
+                type: "Pertumbuhan",
+                concept: "Pertumbuhan bersifat kuantitatif (dapat diukur dengan angka) dan irreversible, ditandai dengan pertambahan jumlah sel dan ukuran matriks antarsel melalui pembelahan mitosis."
+            },
+            {
+                id: 2,
+                statement: "Pematangan fungsi organ reproduksi (seperti terjadinya mimpi basah atau menstruasi).",
+                type: "Perkembangan",
+                concept: "Perkembangan bersifat kualitatif (tidak dapat diukur dengan angka langsung), melibatkan proses diferensiasi sel dan pematangan fungsi fisiologis/organ tubuh menuju kedewasaan."
+            },
+            {
+                id: 3,
+                statement: "Pertambahan berat otak anak seiring pertambahan jumlah jaringan saraf.",
+                type: "Pertumbuhan",
+                concept: "Penambahan massa fisik, berat organ, atau volume sel tergolong sebagai proses Pertumbuhan."
+            },
+            {
+                id: 4,
+                statement: "Kemampuan kognitif bayi dari sekadar merangkak menjadi mampu berjalan dan berbicara.",
+                type: "Perkembangan",
+                concept: "Kematangan fungsi koordinasi sistem saraf dan otot merupakan proses Perkembangan fisiologis dan psikomotorik."
+            }
+        ];
+
+        function renderApersepsi() {
+            const container = document.getElementById('apersepsiContainer');
+            container.innerHTML = apersepsiData.map((item, idx) => `
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                    <p class="text-xs sm:text-sm font-semibold text-slate-800">${idx + 1}. ${item.statement}</p>
+                    <div class="flex gap-3">
+                        <button onclick="answerApersepsi(${item.id}, 'Pertumbuhan')" class="btn-ap-${item.id}-Pertumbuhan px-4 py-2 rounded-lg border border-bio-300 text-xs font-semibold text-bio-800 bg-white hover:bg-bio-50 transition">
+                            Pertumbuhan (Kuantitatif)
+                        </button>
+                        <button onclick="answerApersepsi(${item.id}, 'Perkembangan')" class="btn-ap-${item.id}-Perkembangan px-4 py-2 rounded-lg border border-bio-300 text-xs font-semibold text-bio-800 bg-white hover:bg-bio-50 transition">
+                            Perkembangan (Kualitatif)
+                        </button>
+                    </div>
+                    <div id="ap-fb-${item.id}" class="hidden p-3 rounded-lg text-xs leading-relaxed"></div>
+                </div>
+            `).join('');
+        }
+
+        function answerApersepsi(id, selected) {
+            const item = apersepsiData.find(q => q.id === id);
+            const fbBox = document.getElementById(`ap-fb-${id}`);
+            fbBox.classList.remove('hidden');
+
+            if (selected === item.type) {
+                playSound('success');
+                fbBox.className = "p-3 rounded-lg text-xs leading-relaxed bg-bio-100 border border-bio-300 text-bio-900";
+                fbBox.innerHTML = `
+                    <div class="flex items-center font-bold text-bio-800 gap-1 mb-1">
+                        <i class="fa-solid fa-circle-check"></i> Jawaban Tepat! (${item.type})
+                    </div>
+                    <p><b>Penjelasan Konseptual:</b> ${item.concept}</p>
+                `;
+            } else {
+                playSound('error');
+                fbBox.className = "p-3 rounded-lg text-xs leading-relaxed bg-red-50 border border-red-200 text-red-900";
+                fbBox.innerHTML = `
+                    <div class="flex items-center font-bold text-red-700 gap-1 mb-1">
+                        <i class="fa-solid fa-circle-xmark"></i> Kurang Tepat (Jawaban Benar: ${item.type})
+                    </div>
+                    <p><b>Penjelasan Konseptual:</b> ${item.concept}</p>
+                `;
+            }
+        }
+
+        let currentEmbryoStage = 0;
+        const embryoStageData = [
+            { name: "1. Zigot (1 Sel Dipoloid)", desc: "<b>Zigot:</b> Sel tunggal hasil fertilisasi (2n). Mengalami pembelahan sel berulang (cleavage) tanpa pertambahan ukuran total." },
+            { name: "2. Morula (Bola Sel Padat)", desc: "<b>Morula:</b> Bola padat berisi 16 - 64 sel morfologi mirip buah murbei hasil dari mitosis berturut-turut." },
+            { name: "3. Blastula (Rongga Blastosol)", desc: "<b>Blastula:</b> Sel-sel tersusun membentuk lapisan luar (trofoblas) dan rongga berisi cairan (blastosol) yang siap melakukan implantasi di dinding uterus." },
+            { name: "4. Gastrula (3 Lapisan Germinal)", desc: "<b>Gastrula:</b> Terjadi lekukan (gastrulasi) membentuk 3 lapisan jaringan dasar embrionik: Ektoderm (luar), Mesoderm (tengah), dan Endoderm (dalam)." },
+            { name: "5. Organogenesis (Spesialisasi Organ)", desc: "<b>Organogenesis:</b> Diferensiasi dan spesialisasi sel-sel pada 3 lapisan embrio menjadi organ tubuh utuh (seperti jantung, otak, sistem pencernaan)." }
+        ];
+
+        function setEmbryoStage(index) {
+            playSound('click');
+            currentEmbryoStage = index;
+            document.getElementById('canvasStageTag').innerText = embryoStageData[index].name;
+            document.getElementById('stageDescBox').innerHTML = embryoStageData[index].desc;
+
+            // Highlight button
+            const btns = document.querySelectorAll('.stage-btn');
+            btns.forEach((btn, idx) => {
+                if (idx === index) {
+                    btn.className = "stage-btn w-full text-left p-3 rounded-xl border border-bio-400 bg-bio-100 font-bold text-xs text-bio-900 shadow-sm transition flex justify-between items-center";
+                } else {
+                    btn.className = "stage-btn w-full text-left p-3 rounded-xl border border-slate-200 bg-white font-semibold text-xs text-slate-700 hover:bg-bio-50 transition flex justify-between items-center";
+                }
+            });
+
+            drawEmbryoCanvas();
+        }
+
+        function drawEmbryoCanvas() {
+            const canvas = document.getElementById('embryoCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            if (currentEmbryoStage === 0) {
+                // Zygote
+                ctx.beginPath();
+                ctx.arc(cx, cy, 60, 0, Math.PI * 2);
+                ctx.fillStyle = '#22c55e';
+                ctx.fill();
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = '#4ade80';
+                ctx.stroke();
+
+                // Nucleus
+                ctx.beginPath();
+                ctx.arc(cx, cy, 20, 0, Math.PI * 2);
+                ctx.fillStyle = '#15803d';
+                ctx.fill();
+            } else if (currentEmbryoStage === 1) {
+                // Morula
+                const numCells = 18;
+                for (let i = 0; i < numCells; i++) {
+                    const angle = (i / numCells) * Math.PI * 2;
+                    const r = (i % 2 === 0) ? 35 : 20;
+                    const x = cx + Math.cos(angle) * r;
+                    const y = cy + Math.sin(angle) * r;
+
+                    ctx.beginPath();
+                    ctx.arc(x, y, 18, 0, Math.PI * 2);
+                    ctx.fillStyle = '#16a34a';
+                    ctx.fill();
+                    ctx.strokeStyle = '#dcfce7';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            } else if (currentEmbryoStage === 2) {
+                // Blastula
+                ctx.beginPath();
+                ctx.arc(cx, cy, 70, 0, Math.PI * 2);
+                ctx.fillStyle = '#0f172a';
+                ctx.fill();
+                ctx.strokeStyle = '#22c55e';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Outer Ring of cells
+                for (let a = 0; a < 24; a++) {
+                    const angle = (a / 24) * Math.PI * 2;
+                    const x = cx + Math.cos(angle) * 62;
+                    const y = cy + Math.sin(angle) * 62;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 10, 0, Math.PI * 2);
+                    ctx.fillStyle = '#4ade80';
+                    ctx.fill();
+                }
+                // Inner cell mass
+                ctx.beginPath();
+                ctx.arc(cx - 30, cy - 20, 22, 0, Math.PI * 2);
+                ctx.fillStyle = '#86efac';
+                ctx.fill();
+            } else if (currentEmbryoStage === 3) {
+                // Gastrula (3 layers)
+                // Ektoderm (Outer blue)
+                ctx.beginPath();
+                ctx.arc(cx, cy, 75, 0, Math.PI * 2);
+                ctx.fillStyle = '#3b82f6';
+                ctx.fill();
+
+                // Mesoderm (Middle red)
+                ctx.beginPath();
+                ctx.arc(cx, cy, 55, 0, Math.PI * 2);
+                ctx.fillStyle = '#ef4444';
+                ctx.fill();
+
+                // Endoderm (Inner yellow)
+                ctx.beginPath();
+                ctx.arc(cx, cy, 35, 0, Math.PI * 2);
+                ctx.fillStyle = '#f59e0b';
+                ctx.fill();
+            } else if (currentEmbryoStage === 4) {
+                // Organogenesis (Fetus silhouette outline)
+                ctx.beginPath();
+                ctx.arc(cx - 20, cy - 30, 30, 0, Math.PI * 2); // head
+                ctx.ellipse(cx, cy + 20, 35, 50, Math.PI / 4, 0, Math.PI * 2); // body
+                ctx.fillStyle = '#4ade80';
+                ctx.fill();
+
+                // Heart beat dot
+                ctx.beginPath();
+                ctx.arc(cx - 10, cy + 10, 8, 0, Math.PI * 2);
+                ctx.fillStyle = '#ef4444';
+                ctx.fill();
+            }
+        }
+
+        const organData = [
+            { id: 'kulit', name: 'Otak & Jaringan Saraf', layer: 'Ektoderm', desc: 'Sistem saraf tepi, otak, serta epidermis kulit terbentuk dari lapisan paling luar (Ektoderm).' },
+            { id: 'jantung', name: 'Jantung & Otot-Tulang', layer: 'Mesoderm', desc: 'Sistem sirkulasi darah (jantung), rangka tulang, otot, dan organ ekskresi berasal dari Mesoderm.' },
+            { id: 'lambung', name: 'Saluran Pencernaan & Paru', layer: 'Endoderm', desc: 'Lapisan epitel pencernaan (lambung/usus) serta sistem pernapasan (paru-paru) terbentuk dari Endoderm.' },
+            { id: 'ginjal', name: 'Ginjal & Organ Reproduksi', layer: 'Mesoderm', desc: 'Sistem urogenital dan pembuluh darah dikembangkan dari lapisan tengah embrionik (Mesoderm).' }
+        ];
+
+        let selectedOrgan = null;
+
+        function renderOrganMatcher() {
+            const container = document.getElementById('organBtnContainer');
+            container.innerHTML = organData.map(item => `
+                <button id="organBtn-${item.id}" onclick="selectOrganTarget('${item.id}')" class="organ-target-btn p-3 rounded-xl border border-slate-200 bg-white hover:bg-bio-50 font-medium text-xs text-slate-800 text-left transition">
+                    <i class="fa-solid fa-cube text-bio-600 mr-1.5"></i> ${item.name}
+                </button>
+            `).join('');
+        }
+
+        function selectOrganTarget(id) {
+            playSound('click');
+            selectedOrgan = organData.find(o => o.id === id);
+            document.querySelectorAll('.organ-target-btn').forEach(btn => {
+                btn.classList.remove('border-bio-600', 'bg-bio-100', 'font-bold');
+            });
+            const btn = document.getElementById('organBtn-' + id);
+            btn.classList.add('border-bio-600', 'bg-bio-100', 'font-bold');
+        }
+
+        function submitGermMatch(chosenLayer) {
+            const fbBox = document.getElementById('organFeedback');
+            fbBox.classList.remove('hidden');
+
+            if (!selectedOrgan) {
+                fbBox.className = "p-4 rounded-xl text-xs leading-relaxed bg-amber-50 border border-amber-300 text-amber-900";
+                fbBox.innerHTML = "<i class='fa-solid fa-triangle-exclamation mr-1'></i> <b>Instruksi:</b> Silakan pilih organ target di kolom kiri terlebih dahulu!";
+                return;
+            }
+
+            if (chosenLayer === selectedOrgan.layer) {
+                playSound('success');
+                fbBox.className = "p-4 rounded-xl text-xs leading-relaxed bg-bio-100 border border-bio-400 text-bio-900";
+                fbBox.innerHTML = `
+                    <div class="font-bold text-bio-800 text-sm mb-1"><i class="fa-solid fa-circle-check"></i> Pasangan Tepat! (${selectedOrgan.name} ➔ ${chosenLayer})</div>
+                    <p><b>Penjelasan Konseptual:</b> ${selectedOrgan.desc}</p>
+                `;
+            } else {
+                playSound('error');
+                fbBox.className = "p-4 rounded-xl text-xs leading-relaxed bg-red-50 border border-red-300 text-red-900";
+                fbBox.innerHTML = `
+                    <div class="font-bold text-red-800 text-sm mb-1"><i class="fa-solid fa-circle-xmark"></i> Kurang Tepat (Jawaban Benar: ${selectedOrgan.layer})</div>
+                    <p><b>Penjelasan Konseptual:</b> ${selectedOrgan.desc}</p>
+                `;
+            }
+        }
+
+        const ageTimelineData = [
+            { title: "Masa Bayi (0 - 2 Tahun)", icon: "fa-baby", desc: "Pertumbuhan fisik paling pesat kedua setelah fase janin. Otak mengalami pembentukan sinapsis saraf masif, perkembangan refleks motorik kasar dan halus." },
+            { title: "Masa Anak-Anak (3 - 11 Tahun)", icon: "fa-child", desc: "Pertumbuhan memanjang tulang stabil, perkembangan kognitif, daya ingat, bahasa, serta sosialisasi awal." },
+            { title: "Masa Remaja / Pubertas (12 - 18 Tahun)", icon: "fa-user-graduate", desc: "Percepatan pertumbuhan (growth spurt) diikuti kematangan organ seksual primer dan sekunder akibat stimulasi hormon GnRH, FSH, LH, Estrogen, dan Testosteron." },
+            { title: "Masa Dewasa (19 - 50 Tahun)", icon: "fa-user-check", desc: "Pertumbuhan tinggi badan terhenti karena pembentukan kartilago lempeng epifisis tulang telah teroksifikasi sempurna. Fungsi organ berada pada puncak optimal." },
+            { title: "Masa Lansia (> 50 Tahun)", icon: "fa-user-clock", desc: "Proses penuaan (senesensi), penurunan laju metabolisme sel, pembelahan sel melambat, serta daya elastisitas jaringan berkurang." }
+        ];
+
+        function updateAgeTimeline(val) {
+            playSound('click');
+            const data = ageTimelineData[val];
+            document.getElementById('lifeStageTitle').innerText = data.title;
+            document.getElementById('lifeStageDesc').innerText = data.desc;
+            document.getElementById('lifeIcon').className = `fa-solid ${data.icon}`;
+        }
+
+        const pubertyData = [
+            {
+                id: 1,
+                trait: "Mimpi basah dan pembentukan sel sperma (Spermatogenesis).",
+                type: "Pria (Ciri Primer)",
+                reason: "Ciri primer pubertas ditandai langsung oleh kemampuan fungsional organ reproduksi menghasilkan gamet jantan (sperma)."
+            },
+            {
+                id: 2,
+                trait: "Menstruasi (Menarche) dan pematangan ovum.",
+                type: "Wanita (Ciri Primer)",
+                reason: "Menstruasi merupakan pertanda biologis utama (ciri primer) maturasi sistem reproduksi wanita di bawah pengaruh hormon Estrogen & Progesteron."
+            },
+            {
+                id: 3,
+                trait: "Suara membesar (nada berat) akibat pembesaran laring/jakun.",
+                type: "Pria (Ciri Sekunder)",
+                reason: "Hormon Testosteron merangsang penebalan pita suara dan laring laki-laki sebagai ciri fisik sekunder."
+            },
+            {
+                id: 4,
+                trait: "Pinggul membesar dan payudara membesar.",
+                type: "Wanita (Ciri Sekunder)",
+                reason: "Deposisi jaringan lemak pada pinggul dan payudara wanita dirangsang oleh hormon Estrogen."
+            }
+        ];
+
+        function renderPubertyQuiz() {
+            const container = document.getElementById('pubertyContainer');
+            container.innerHTML = pubertyData.map((item, idx) => `
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                    <p class="text-xs sm:text-sm font-semibold text-slate-800">${idx + 1}. ${item.trait}</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <button onclick="answerPuberty(${item.id}, 'Pria (Ciri Primer)')" class="p-2 rounded-lg border border-bio-200 bg-white hover:bg-bio-50 text-xs font-medium">Pria (Primer)</button>
+                        <button onclick="answerPuberty(${item.id}, 'Pria (Ciri Sekunder)')" class="p-2 rounded-lg border border-bio-200 bg-white hover:bg-bio-50 text-xs font-medium">Pria (Sekunder)</button>
+                        <button onclick="answerPuberty(${item.id}, 'Wanita (Ciri Primer)')" class="p-2 rounded-lg border border-bio-200 bg-white hover:bg-bio-50 text-xs font-medium">Wanita (Primer)</button>
+                        <button onclick="answerPuberty(${item.id}, 'Wanita (Ciri Sekunder)')" class="p-2 rounded-lg border border-bio-200 bg-white hover:bg-bio-50 text-xs font-medium">Wanita (Sekunder)</button>
+                    </div>
+                    <div id="pub-fb-${item.id}" class="hidden p-3 rounded-lg text-xs leading-relaxed"></div>
+                </div>
+            `).join('');
+        }
+
+        function answerPuberty(id, selected) {
+            const item = pubertyData.find(p => p.id === id);
+            const fbBox = document.getElementById(`pub-fb-${id}`);
+            fbBox.classList.remove('hidden');
+
+            if (selected === item.type) {
+                playSound('success');
+                fbBox.className = "p-3 rounded-lg text-xs leading-relaxed bg-bio-100 border border-bio-300 text-bio-900";
+                fbBox.innerHTML = `
+                    <div class="font-bold text-bio-800 mb-1"><i class="fa-solid fa-circle-check"></i> Klasifikasi Tepat! (${item.type})</div>
+                    <p><b>Alasan Fisiologis:</b> ${item.reason}</p>
+                `;
+            } else {
+                playSound('error');
+                fbBox.className = "p-3 rounded-lg text-xs leading-relaxed bg-red-50 border border-red-200 text-red-900";
+                fbBox.innerHTML = `
+                    <div class="font-bold text-red-700 mb-1"><i class="fa-solid fa-circle-xmark"></i> Kurang Tepat (Jawaban Benar: ${item.type})</div>
+                    <p><b>Alasan Fisiologis:</b> ${item.reason}</p>
+                `;
+            }
+        }
+
+        const caseStudyOptions = [
+            {
+                text: "A. Karena Trimester Pertama adalah fase Organogenesis, tempat pembentukan dasar seluruh cetak biru organ tubuh.",
+                correct: true,
+                reason: "BENAR! Pada trimester pertama terjadi Gastrulasi dan Organogenesis mendasar. Paparan teratogen atau defisiensi gizi saat sel mengalami spesialisasi awal akan memicu kecacatan permanen struktur organ utama."
+            },
+            {
+                text: "B. Karena sel janin pada trimester pertama belum membelah sama sekali.",
+                correct: false,
+                reason: "SALAH. Sel janin justru membelah sangat cepat melalui mitosis pada fase embrionik awal."
+            },
+            {
+                text: "C. Karena ukuran rahim ibu belum membesar sehingga janin kekurangan oksigen.",
+                correct: false,
+                reason: "SALAH. Penyebab utama kecacatan struktur organ pada trimester 1 adalah terganggunya proses diferensiasi sel embrionik, bukan ukuran rahim ibu."
+            }
+        ];
+
+        function renderCaseStudy() {
+            const container = document.getElementById('caseOptions');
+            container.innerHTML = caseStudyOptions.map((opt, idx) => `
+                <button onclick="answerCaseStudy(${idx})" class="w-full text-left p-3 rounded-xl border border-amber-200 bg-amber-50/50 hover:bg-amber-100 transition text-xs font-medium text-amber-950">
+                    ${opt.text}
+                </button>
+            `).join('');
+        }
+
+        function answerCaseStudy(idx) {
+            const opt = caseStudyOptions[idx];
+            const fbBox = document.getElementById('caseFeedback');
+            fbBox.classList.remove('hidden');
+
+            if (opt.correct) {
+                playSound('success');
+                fbBox.className = "p-4 rounded-xl text-xs leading-relaxed bg-bio-100 border border-bio-400 text-bio-900";
+                fbBox.innerHTML = `
+                    <div class="font-bold text-bio-800 text-sm mb-1"><i class="fa-solid fa-circle-check"></i> Analisis Klinis Tepat!</div>
+                    <p><b>Penjelasan Deep Learning:</b> ${opt.reason}</p>
+                `;
+            } else {
+                playSound('error');
+                fbBox.className = "p-4 rounded-xl text-xs leading-relaxed bg-red-50 border border-red-300 text-red-900";
+                fbBox.innerHTML = `
+                    <div class="font-bold text-red-800 text-sm mb-1"><i class="fa-solid fa-circle-xmark"></i> Analisis Kurang Tepat</div>
+                    <p><b>Penjelasan Deep Learning:</b> ${opt.reason}</p>
+                `;
+            }
+        }
+
+        const quizQuestions = [
+            {
+                id: 1,
+                question: "Urutan tahapan perkembangan embrionik manusia yang benar sejak fertilisasi hingga pembentukan organ adalah...",
+                options: [
+                    "A. Zigot ➔ Morula ➔ Gastrula ➔ Blastula ➔ Organogenesis",
+                    "B. Zigot ➔ Morula ➔ Blastula ➔ Gastrula ➔ Organogenesis",
+                    "C. Zigot ➔ Blastula ➔ Morula ➔ Gastrula ➔ Organogenesis",
+                    "D. Zigot ➔ Gastrula ➔ Blastula ➔ Morula ➔ Organogenesis"
+                ],
+                correct: 1,
+                explanation: "Urutan embrionik yang tepat: Zigot (1 sel) ➔ Morula (bola padat) ➔ Blastula (berongga) ➔ Gastrula (3 lapisan) ➔ Organogenesis."
+            },
+            {
+                id: 2,
+                question: "Lapisan mesoderm pada fase gastrula akan berkembang membentuk organ tubuh berikut, Yaitu...",
+                options: [
+                    "A. Kulit dan Sistem Saraf Pusat",
+                    "B. Paru-paru dan Lapisan Lambung",
+                    "C. Jantung, Tulang Rangka, dan Otot",
+                    "D. Rambut dan Lensa Mata"
+                ],
+                correct: 2,
+                explanation: "Mesoderm membentuk sistem sirkulasi (jantung), sistem gerak (tulang & otot), serta ekskresi."
+            },
+            {
+                id: 3,
+                question: "Faktor utama yang menghentikan pertumbuhan memanjang tulang manusia pada masa dewasa adalah...",
+                options: [
+                    "A. Kerusakan jaringan saraf epifisis",
+                    "B. Penutupan / osifikasi sempurna lempeng epifisis kartilago oleh estrogen/testosteron",
+                    "C. Berhentinya produksi sel darah putih di sumsum tulang",
+                    "D. Penurunan jumlah ion kalsium dalam darah"
+                ],
+                correct: 1,
+                explanation: "Hormon seks pada akhir masa pubertas memicu osifikasi lengkap lempeng epifisis tulang panjang sehingga tinggi badan tidak bertambah lagi."
+            }
+        ];
+
+        let userQuizAnswers = {};
+
+        function renderEvalQuiz() {
+            const container = document.getElementById('evalQuizContainer');
+            container.innerHTML = quizQuestions.map((q, qIdx) => `
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                    <p class="text-xs sm:text-sm font-bold text-slate-800">${qIdx + 1}. ${q.question}</p>
+                    <div class="space-y-2">
+                        ${q.options.map((opt, oIdx) => `
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 bg-white hover:bg-bio-50 cursor-pointer text-xs transition">
+                                <input type="radio" name="quiz-${q.id}" value="${oIdx}" onchange="registerAnswer(${q.id}, ${oIdx})" class="accent-bio-600">
+                                <span class="text-slate-700">${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="q-explain-${q.id}" class="hidden p-3 rounded-xl text-xs leading-relaxed"></div>
+                </div>
+            `).join('');
+        }
+
+        function registerAnswer(qId, optionIdx) {
+            playSound('click');
+            userQuizAnswers[qId] = optionIdx;
+        }
+
+        function calculateFinalScore() {
+            let correctCount = 0;
+            quizQuestions.forEach(q => {
+                const selected = userQuizAnswers[q.id];
+                const explainBox = document.getElementById(`q-explain-${q.id}`);
+                explainBox.classList.remove('hidden');
+
+                if (selected === q.correct) {
+                    correctCount++;
+                    explainBox.className = "p-3 rounded-xl text-xs leading-relaxed bg-bio-100 border border-bio-300 text-bio-900";
+                    explainBox.innerHTML = `<b><i class="fa-solid fa-circle-check"></i> Benar!</b> ${q.explanation}`;
+                } else {
+                    explainBox.className = "p-3 rounded-xl text-xs leading-relaxed bg-red-50 border border-red-300 text-red-900";
+                    explainBox.innerHTML = `<b><i class="fa-solid fa-circle-xmark"></i> Kurang Tepat!</b> ${q.explanation}`;
+                }
+            });
+
+            const score = Math.round((correctCount / quizQuestions.length) * 100);
+            document.getElementById('quizScoreBadge').innerText = `Skor: ${score} / 100`;
+            document.getElementById('summaryScoreText').innerText = `${score} / 100`;
+
+            if (score >= 70) {
+                playSound('success');
+            } else {
+                playSound('error');
+            }
+        }
+
+        function generatePrintReport() {
+            playSound('click');
+            const name = document.getElementById('studentNameInput').value || 'Murid Biologi';
+            const studentClass = document.getElementById('studentClassInput').value || '12/Fase F';
+            const reflection = document.getElementById('reflectionInput').value || 'Telah menyelesaikan eksplorasi materi pertumbuhan dan perkembangan manusia.';
+            const scoreText = document.getElementById('summaryScoreText').innerText;
+
+            const printWin = window.open('', '_blank');
+            printWin.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Laporan Pembelajaran Biologi - SMAN 1 Parongpong</title>
+                    <style>
+                        body { font-family: sans-serif; padding: 40px; color: #1e293b; }
+                        .header { border-bottom: 2px solid #16a34a; padding-bottom: 15px; margin-bottom: 25px; }
+                        h1 { color: #15803d; margin: 0; font-size: 22px; }
+                        p { margin: 5px 0; font-size: 13px; }
+                        .box { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-top: 20px; }
+                        .score { font-size: 24px; font-weight: bold; color: #16a34a; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>LAPORAN HASIL MEDIA PEMBELAJARAN INTERAKTIF BIOLOGI</h1>
+                        <p><strong>SMAN 1 Parongpong</strong> • Guru Pengembang: Imas Rohimah</p>
+                    </div>
+                    <p><strong>Nama Murid:</strong> ${name}</p>
+                    <p><strong>Kelas / Absen:</strong> ${studentClass}</p>
+                    <p><strong>Mata Pelajaran:</strong> Biologi - Fase F (Kelas 12)</p>
+                    <p><strong>Topik Materi:</strong> Pertumbuhan & Perkembangan pada Manusia</p>
+                    <p><strong>Tanggal Selesai:</strong> ${new Date().toLocaleDateString('id-ID')}</p>
+
+                    <div class="box">
+                        <p><strong>Skor Evaluasi Pemahaman Konsep:</strong></p>
+                        <div class="score">${scoreText}</div>
+                    </div>
+
+                    <div class="box" style="background:#f8fafc; border-color:#e2e8f0;">
+                        <p><strong>Jurnal Refleksi Deep Learning Murid:</strong></p>
+                        <p><i>"${reflection}"</i></p>
+                    </div>
+
+                    <div style="margin-top: 50px; text-align: right;">
+                        <p>Mengetahui,</p>
+                        <br><br>
+                        <p><b>Imas Rohimah</b><br>Guru Biologi SMAN 1 Parongpong</p>
+                    </div>
+                    <script>
+                        window.onload = function() { window.print(); }
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWin.document.close();
+        }
+
+        window.onload = function() {
+            renderApersepsi();
+            renderOrganMatcher();
+            renderPubertyQuiz();
+            renderCaseStudy();
+            renderEvalQuiz();
+            drawEmbryoCanvas();
+        };
+    </script>
+</body>
+</html>
